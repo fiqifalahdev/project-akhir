@@ -25,7 +25,8 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:55',
             'email' => 'email|required|unique:users',
             'phone' => 'required|max:12',
-            'address' => 'required',
+            'gender' => 'required',
+            'birthdate' => 'required',
             'password' => 'required|confirmed',
             'password_confirmation' => 'required'
         ];
@@ -44,7 +45,8 @@ class RegisterRequest extends FormRequest
             'email.required' => 'Email harus diisi!',
             'phone.required' => 'Nomor telepon harus diisi!',
             'phone.max' => 'Nomor telepon maksimal 12 angka!',
-            'address.required' => 'Alamat harus diisi!',
+            'gender.required' => 'Jenis Kelamin harus diisi!',
+            'birthdate.required' => 'Tanggal lahir harus diisi!',
             'password.required' => 'Password harus diisi!',
             'password_confirmation.required' => 'Konfirmasi password harus diisi!',
         ];
