@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProfileRequest extends FormRequest
 {
@@ -13,6 +14,8 @@ class ProfileRequest extends FormRequest
     {
         return true;
     }
+
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -28,11 +31,11 @@ class ProfileRequest extends FormRequest
             'birthdate' => 'required|date',
             'gender' => 'required|string',
             'address' => 'required|string',
+            'role' => ['required', Rule::enum(Role::class)],
             // Location Data
-            'kel_id' => 'required|string',
-            'longitude' => 'string',
-            'latitude' => 'string',
-            'role' => 'required|enum:pembudidaya,pengepul'
+            // 'kel_id' => 'required|string',
+            // 'longitude' => 'string',
+            // 'latitude' => 'string',
         ];
     }
 
@@ -51,9 +54,15 @@ class ProfileRequest extends FormRequest
             'birthdate.required' => 'Tanggal lahir harus diisi!',
             'gender.required' => 'Jenis Kelamin harus diisi!',
             'address.required' => 'Alamat harus diisi!',
-            'kel_id.required' => 'Kelurahan harus diisi!',
+            // 'kel_id.required' => 'Kelurahan harus diisi!',
             'role.required' => 'Role harus diisi!',
             'role.enum' => 'Role harus diisi dengan pembudidaya atau pengepul!'
         ];
     }
+}
+
+enum Role: string
+{
+    case PEMBUDIDAYA = 'pembudidaya';
+    case PENGEPUL = 'pengepul';
 }

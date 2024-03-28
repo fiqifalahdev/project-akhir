@@ -70,11 +70,11 @@ class UserService
      * berhubung User memiliki relasi ke Location.
      * 
      */
-    public function updateProfile(array $requestData, int $user_id)
+    public function updateProfile(array $requestData)
     {
         try {
             // Get User by its id.
-            $user = $this->user_repository->getBaseInfoByUserId($user_id);
+            $user = $this->user_repository->getBaseInfoByUserId(auth()->id());
 
             // Check user is exist
             if ($user === null) {
