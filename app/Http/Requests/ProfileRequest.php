@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 
 class ProfileRequest extends FormRequest
 {
@@ -32,6 +33,7 @@ class ProfileRequest extends FormRequest
             'gender' => 'required|string',
             'address' => 'required|string',
             'role' => ['required', Rule::enum(Role::class)],
+            'profile_image' => ['required', File::types(['jpeg', 'png', 'jpg'])->max(2048)]
             // Location Data
             // 'kel_id' => 'required|string',
             // 'longitude' => 'string',
@@ -56,7 +58,9 @@ class ProfileRequest extends FormRequest
             'address.required' => 'Alamat harus diisi!',
             // 'kel_id.required' => 'Kelurahan harus diisi!',
             'role.required' => 'Role harus diisi!',
-            'role.enum' => 'Role harus diisi dengan pembudidaya atau pengepul!'
+            'role.enum' => 'Role harus diisi dengan pembudidaya atau pengepul!',
+            'profile_image.image' => 'Profile image harus berupa gambar!',
+            'profile_image.mimes' => 'Profile image harus berupa gambar dengan format jpeg, png, jpg!',
         ];
     }
 }

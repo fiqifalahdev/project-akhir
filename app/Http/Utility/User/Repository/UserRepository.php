@@ -4,9 +4,12 @@ namespace App\Http\Utility\User\Repository;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use App\Http\Traits\UploadFile;
 
 class UserRepository
 {
+    use UploadFile;
     // =============== Select Data ===============
     /**
      * Get Base Info User
@@ -53,7 +56,20 @@ class UserRepository
         //     ]);
         // }
 
-        $user->update($data);
+        // Make Upload Image
+        // dd($data['profile_image']->getFileName());
+
+        // Update User Data
+        $user->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'birthdate' => $data['birthdate'],
+            'gender' => $data['gender'],
+            'address' => $data['address'],
+            'role' => $data['role'],
+            'profile_image' => $data['profile_image_path'],
+        ]);
 
         // DB::commit();
 

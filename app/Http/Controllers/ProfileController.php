@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
 use App\Http\Utility\User\Services\UserService;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Traits\UploadFile;
 
 class ProfileController extends Controller
 {
+    use UploadFile;
 
     public function __construct(
         private UserService $user_service
@@ -76,9 +76,13 @@ class ProfileController extends Controller
     public function update(ProfileRequest $request, int $user_id)
     {
         try {
+            if ($request->hasFile('profile_image')) {
+                $path = $this->uploadFile($request->profile_image, 'profileImages', 'public', $request->name . '_profile_img');
+            }
+
             // Automatically validate the incoming request
             // update user profile with send the request data and user data
-            $update_profile = $this->user_service->updateProfile($request->validated(), $user_id);
+            $update_profile = $this->user_service->updateProfile([...$request->validated(), 'profile_image_path' => $path], $user_id);
 
             if ($update_profile instanceof \Exception) {
                 return response()->json([
