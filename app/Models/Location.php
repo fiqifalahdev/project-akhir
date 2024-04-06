@@ -11,7 +11,7 @@ class Location extends Model
     use HasFactory;
 
     protected $table = 'location';
-    protected $guarded = 'id';
+    protected $guarded = ['id'];
 
     // =============== Relationship ===============
     public function user(): HasMany

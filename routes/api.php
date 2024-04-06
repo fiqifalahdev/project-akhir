@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,15 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::resource('profiles', ProfileController::class)->except(['create', 'store', 'edit']);
+    // Route::post('/logout', [AuthController::class, 'logout']); // nanti bikin api nya
+
+    // ================== Profile ===================
+    Route::get('/profiles', [ProfileController::class, 'index']);
+    Route::get('/profiles/{profile}', [ProfileController::class, 'show']);
+    Route::put('/profiles', [ProfileController::class, 'update']);
+    Route::delete('/profiles', [ProfileController::class, 'destroy']);
+
+
+    // ================== Location ==================
+    Route::post('/store/location', [LocationController::class, 'storeLocation']);
 });

@@ -73,7 +73,7 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProfileRequest $request, int $user_id)
+    public function update(ProfileRequest $request)
     {
         try {
             if ($request->hasFile('profile_image')) {
@@ -82,7 +82,7 @@ class ProfileController extends Controller
 
             // Automatically validate the incoming request
             // update user profile with send the request data and user data
-            $update_profile = $this->user_service->updateProfile([...$request->validated(), 'profile_image_path' => $path], $user_id);
+            $update_profile = $this->user_service->updateProfile([...$request->validated(), 'profile_image_path' => $path]);
 
             if ($update_profile instanceof \Exception) {
                 return response()->json([
