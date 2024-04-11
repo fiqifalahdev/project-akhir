@@ -25,7 +25,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    // Route::post('/logout', [AuthController::class, 'logout']); // nanti bikin api nya
+    Route::post('/logout', [AuthController::class, 'logout']); // nanti bikin api nya
 
     // ================== Profile ===================
     Route::get('/profiles', [ProfileController::class, 'index']);
