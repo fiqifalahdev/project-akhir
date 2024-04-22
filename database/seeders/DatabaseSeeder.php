@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Location;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,11 +22,17 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $this->call([
-            ProvinceSeed::class,
-            RegencySeed::class,
-            DistrictSeed::class,
-            VillageSeed::class,
-        ]);
+        // User::factory()->count(10)->create();
+
+        // Location::newFactory()->count(2)->create();
+
+        // $this->call([
+        //     ProvinceSeed::class,
+        //     RegencySeed::class,
+        //     DistrictSeed::class,
+        //     VillageSeed::class,
+        // ]);
+
+
     }
 }

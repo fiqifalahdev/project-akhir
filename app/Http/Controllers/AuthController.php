@@ -76,6 +76,28 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Logout function to logout a user
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        try {
+            Auth::logout();
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil logout!'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User gagal logout!',
+                'errors' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /** 
      * Create Response for Auth
      * 

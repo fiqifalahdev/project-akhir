@@ -6,6 +6,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Http\Utility\User\Services\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Traits\UploadFile;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -19,6 +20,9 @@ class ProfileController extends Controller
     /**
      * Display a listing of the resource.
      * or in other word this function is for showing a base_info from user
+     *    - add the catalog image on the detail profile
+     * 
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
@@ -29,7 +33,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User base info : ' . $base_info->name,
-                'data' => ['detail' => $base_info, 'location' => $base_info->location()->first()],
+                'data' => ['detail' => $base_info, 'location' => $base_info->location()->get(), 'feeds' => $base_info->feeds()->get()],
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
@@ -42,6 +46,11 @@ class ProfileController extends Controller
     /**
      * Display the specified resource.
      * Dispay the Detailed Profile of the user
+     *    - add the feed image on the detail profile
+     * 
+     * @param int $user_id
+     * @return \Illuminate\Http\JsonResponse
+     * 
      */
     public function show(int $user_id)
     {
@@ -59,7 +68,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User detail profile : ' . $detail_profile->name,
-                'data' => ['detail' => $detail_profile, 'location' => $detail_profile->location()->first()], // nanti tambahkan detail lokasi juga
+                'data' => ['detail' => $detail_profile, 'location' => $detail_profile->location()->get(), 'feeds' => $detail_profile->feeds()->get()], // nanti tambahkan detail lokasi juga
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
@@ -71,9 +80,13 @@ class ProfileController extends Controller
 
 
     /**
-     * Update the specified resource in storage.
+     * Update the user profile.
+     * 
+     * @param ProfileRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * 
      */
-    public function update(ProfileRequest $request, int $user_id)
+    public function update(ProfileRequest $request)
     {
         try {
             if ($request->hasFile('profile_image')) {
@@ -82,7 +95,7 @@ class ProfileController extends Controller
 
             // Automatically validate the incoming request
             // update user profile with send the request data and user data
-            $update_profile = $this->user_service->updateProfile([...$request->validated(), 'profile_image_path' => $path], $user_id);
+            $update_profile = $this->user_service->updateProfile([...$request->validated(), 'profile_image_path' => $path]);
 
             if ($update_profile instanceof \Exception) {
                 return response()->json([
@@ -105,7 +118,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove user account 
+     * 
+     * @param int $user_id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(int $user_id)
     {
