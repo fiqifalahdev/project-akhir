@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
@@ -36,4 +37,9 @@ Route::middleware('auth:api')->group(function () {
 
     // ================== Location ==================
     Route::post('/store/location', [LocationController::class, 'storeLocation']);
+    Route::get('/locations', [LocationController::class, 'getUserLocation']);
+
+    // ==================== Feed ====================
+    Route::post('/store/feeds', [FeedController::class, 'store']);
+    Route::put('/update/feeds/{feed}', [FeedController::class, 'update']);
 });
