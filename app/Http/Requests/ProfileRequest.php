@@ -27,13 +27,12 @@ class ProfileRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'email' => 'required|email',
             'phone' => 'required|string',
             'birthdate' => 'required|date',
             'gender' => 'required|string',
             'address' => 'required|string',
-            'role' => ['required', Rule::enum(Role::class)],
-            'profile_image' => ['required', File::types(['jpeg', 'png', 'jpg'])->max(2048)]
+            'about' => 'string',
+            'profile_image' => [File::types(['jpeg', 'png', 'jpg'])->max(2048)]
             // Location Data
             // 'kel_id' => 'required|string',
             // 'longitude' => 'string',
@@ -51,7 +50,6 @@ class ProfileRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama harus diisi!',
-            'email.required' => 'Email harus diisi!',
             'phone.required' => 'Nomor telepon harus diisi!',
             'birthdate.required' => 'Tanggal lahir harus diisi!',
             'gender.required' => 'Jenis Kelamin harus diisi!',
@@ -59,14 +57,8 @@ class ProfileRequest extends FormRequest
             // 'kel_id.required' => 'Kelurahan harus diisi!',
             'role.required' => 'Role harus diisi!',
             'role.enum' => 'Role harus diisi dengan pembudidaya atau pengepul!',
-            'profile_image.image' => 'Profile image harus berupa gambar!',
-            'profile_image.mimes' => 'Profile image harus berupa gambar dengan format jpeg, png, jpg!',
+            'profile_image.image' => 'Foto profil harus berupa gambar!',
+            'profile_image.mimes' => 'Foto profil harus berupa gambar dengan format jpeg, png, jpg!',
         ];
     }
-}
-
-enum Role: string
-{
-    case PEMBUDIDAYA = 'pembudidaya';
-    case PENGEPUL = 'pengepul';
 }
