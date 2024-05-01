@@ -23,7 +23,7 @@ class FeedRequest extends FormRequest
     {
         return [
             'caption' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,|max:10240',
         ];
     }
 

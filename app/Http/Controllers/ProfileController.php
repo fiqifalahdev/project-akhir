@@ -91,7 +91,10 @@ class ProfileController extends Controller
         try {
             if ($request->hasFile('profile_image')) {
                 $path = $this->uploadFile($request->profile_image, 'profileImages', 'public', $request->name . '_profile_img');
+            } else {
+                $path = null;
             }
+
 
             // Automatically validate the incoming request
             // update user profile with send the request data and user data

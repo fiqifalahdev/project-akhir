@@ -60,12 +60,11 @@ class UserRepository
         // Update User Data
         $user->update([
             'name' => $data['name'],
-            'email' => $data['email'],
             'phone' => $data['phone'],
             'birthdate' => $data['birthdate'],
             'gender' => $data['gender'],
             'address' => $data['address'],
-            'role' => $data['role'],
+            'about' => $data['about'],
             'profile_image' => $data['profile_image_path'],
         ]);
 
