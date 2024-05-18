@@ -84,8 +84,27 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Location::class, 'id', 'user_id', 'location');
     }
 
+    /**
+     * Get the Feeds associated with the user.
+     * 
+     */
     public function feeds(): HasMany
     {
         return $this->hasMany(Feed::class, 'user_id', 'id', 'feeds');
+    }
+
+    /**
+     * Get the appointment requests associated with the user.
+     * 
+     * 
+     */
+    public function appointmentRequests(): HasMany
+    {
+        return $this->hasMany(AppointmentRequest::class, 'requester_id', 'id');
+    }
+
+    public function appointmentAcceptance(): HasMany
+    {
+        return $this->hasMany(AppointmentRequest::class, 'recipient_id', 'id');
     }
 }

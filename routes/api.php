@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\LocationController;
@@ -42,4 +43,7 @@ Route::middleware('auth:api')->group(function () {
     // ==================== Feed ====================
     Route::post('/store/feeds', [FeedController::class, 'store']);
     Route::put('/update/feeds/{feed}', [FeedController::class, 'update']);
+
+    // ==================== Appointment ====================
+    Route::post('/store/appointment-request', [AppointmentController::class, 'store']);
 });

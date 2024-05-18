@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // User::factory()->count(10)->create();
+        User::factory()->count(4)->create();
 
-        // Location::newFactory()->count(2)->create();
+        Location::newFactory()->count(4)->create();
 
         // $this->call([
         //     ProvinceSeed::class,
