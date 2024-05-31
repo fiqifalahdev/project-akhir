@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -117,6 +119,19 @@ class AuthController extends Controller
     ) {
 
         if ($status_code === Response::HTTP_OK || $status_code === Response::HTTP_CREATED) {
+            // Check if the user has device token or not
+            $deviceTokens = DB::table('user_device_token_tables')->where('user_id', Auth::id())->get();
+
+            $deviceToken = [];
+
+            // if not empty, get the device token and store it in the array
+            if ($deviceTokens->isNotEmpty()) {
+                foreach ($deviceTokens as $t) {
+                    $deviceToken[][$t->id] = $t->device_token;
+                }
+            }
+
+            // return the response with the user data 
             $data = [
                 'success' => true,
                 'token' => $token,
@@ -128,7 +143,8 @@ class AuthController extends Controller
                     'gender' => Auth::user()->gender,
                     'birthdate' => Auth::user()->birthdate,
                     'role' => Auth::user()->role,
-                ]
+                ],
+                'device_token' => $deviceToken == null ? [] : $deviceToken
             ];
         }
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,5 +46,10 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/update/feeds/{feed}', [FeedController::class, 'update']);
 
     // ==================== Appointment ====================
+    Route::get('/get/appointment-request', [AppointmentController::class, 'indexByAuth']);
     Route::post('/store/appointment-request', [AppointmentController::class, 'store']);
+    Route::post('/reject/appointment-request/{appointment}', [AppointmentController::class, 'updateAppointmentStatus']);
+
+    // ==================== Notification ====================
+    Route::post('/store/user-token', [NotificationController::class, 'storeToken']);
 });

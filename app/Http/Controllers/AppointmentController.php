@@ -4,20 +4,54 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AppointmentRequest;
 use App\Models\AppointmentRequest as Appointment;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Messaging\CloudMessage;
 
 class AppointmentController extends Controller
 {
-
+    public function __construct(protected $messaging = new NotificationController())
+    {
+    }
     /**
-     *  store appointments
+     *  get appointment request by auth user
      * 
      * 
      */
-    public function store(AppointmentRequest $request)
+    public function indexByAuth(): JsonResponse
+    {
+        try {
+            $appointment = Appointment::with('recipient')
+                ->where('requester_id', auth()->id())
+                ->get();
+
+            if (!$appointment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data janji temu tidak ditemukan'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data janji temu ditemukan',
+                'data' => $appointment,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error : ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     *  store appointment request
+     * 
+     * 
+     */
+    public function store(AppointmentRequest $request): JsonResponse
     {
         try {
 
@@ -30,11 +64,12 @@ class AppointmentController extends Controller
             ]);
 
             // Nanti setelah membuat tambahkan kirim notif ke frontend
-            // $messaging = CloudMessage::withTarget('token', 'token')
-            //     ->withNotification([
-            //         'title' => 'Janji temu baru',
-            //         'body' => 'Anda memiliki janji temu baru'
-            //     ]);
+            /**
+             * Kirim notif nya berupa pesan janji temu baru! 
+             * dengan membawa id dari yang diminta
+             * 
+             */
+            $this->messaging->sendNotification("Janji temu baru", "Anda memiliki permintaan janji temu", $request->recipient_id);
 
             if (!$store) {
                 return response()->json([
@@ -48,6 +83,67 @@ class AppointmentController extends Controller
                 'message' => 'Janji temu berhasil dibuat',
                 'data' => $store
             ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error : ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Reject Appoinment Confirmations 
+     *  
+     * @param string $appointmentId
+     * @param bool $status
+     * 
+     * @return JsonResponse
+     * 
+     */
+    public function updateAppointmentStatus(string $appointmentId, Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'status' => 'required|boolean'
+            ]);
+
+            // if status was true it means that the appointment was accepted
+            if ($request->status) {
+                // update status to accepted
+                $appointment = Appointment::when($appointmentId, function (Builder $query, $appointmentId) {
+                    $query->where('appointment_id', $appointmentId)->update(['status' => 'accepted']);
+                    return $query;
+                })->first();
+                if (!$appointment) {
+                    throw new \Exception("Gagal menerima janji temu");
+                }
+
+                // Nanti setelah membuat tambahkan kirim notif ke frontend
+                $this->messaging->sendNotification("Janji temu diterima", "Permintaan janji temu anda diterima", $appointment->requester->id);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Menerima Janji temu',
+                ], Response::HTTP_OK);
+            } else {
+                // update status to rejected
+                $appointment = Appointment::when($appointmentId, function (Builder $query, $appointmentId) {
+                    $query->where('appointment_id', $appointmentId)->update(['status' => 'rejected']);
+                    return $query;
+                })->first();
+
+                if (!$appointment) {
+                    throw new \Exception("Gagal menolak janji temu");
+                }
+
+                // Nanti setelah membuat tambahkan kirim notif ke frontend
+                $this->messaging->sendNotification("Janji temu ditolak", "Permintaan janji temu anda ditolak", $appointment->requester->id);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Menolak Janji temu',
+                ], Response::HTTP_OK);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
