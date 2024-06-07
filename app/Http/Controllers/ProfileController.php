@@ -7,6 +7,7 @@ use App\Http\Utility\User\Services\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Traits\UploadFile;
 use App\Models\User;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class ProfileController extends Controller
 {
@@ -33,7 +34,13 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User base info : ' . $base_info->name,
-                'data' => ['detail' => $base_info, 'location' => $base_info->location()->get(), 'feeds' => $base_info->feeds()->get()],
+                'data' => [
+                    'detail' => $base_info,
+                    'location' => $base_info->location()->get(),
+                    'feeds' => $base_info->feeds()->get(),
+                    'appointmentSum' => $base_info->appointmentAcceptance()->where('status', 'pending')->count(),
+                    'latestAppointment' => $base_info->appointmentAcceptance()->with('requester')->where('status', 'accepted')->whereNot('appointment_date', '<', now())->get(),
+                ],
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([

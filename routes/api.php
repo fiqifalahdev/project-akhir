@@ -46,9 +46,10 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/update/feeds/{feed}', [FeedController::class, 'update']);
 
     // ==================== Appointment ====================
-    Route::get('/get/appointment-request', [AppointmentController::class, 'indexByAuth']);
+    Route::get('/get/appointment-request', [AppointmentController::class, 'appointmentRequest']);
+    Route::get('/get/appointment-recipient', [AppointmentController::class, 'appointmentRecipient']);
     Route::post('/store/appointment-request', [AppointmentController::class, 'store']);
-    Route::post('/reject/appointment-request/{appointment}', [AppointmentController::class, 'updateAppointmentStatus']);
+    Route::post('/update/appointment-request/{appointment}', [AppointmentController::class, 'updateAppointmentStatus']);
 
     // ==================== Notification ====================
     Route::post('/store/user-token', [NotificationController::class, 'storeToken']);

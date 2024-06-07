@@ -19,14 +19,14 @@ class AppointmentController extends Controller
      * 
      * 
      */
-    public function indexByAuth(): JsonResponse
+    public function appointmentRequest(): JsonResponse
     {
         try {
-            $appointment = Appointment::with('recipient')
+            $appointments = Appointment::with('recipient')
                 ->where('requester_id', auth()->id())
                 ->get();
 
-            if (!$appointment) {
+            if ($appointments->isEmpty()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data janji temu tidak ditemukan'
@@ -36,7 +36,47 @@ class AppointmentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Data janji temu ditemukan',
-                'data' => $appointment,
+                'data' => $appointments,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Internal Server Error : ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get incoming appointment for recipient user 
+     * 
+     * 
+     */
+    public function appointmentRecipient(): JsonResponse
+    {
+        try {
+            $appointments = Appointment::with('requester')
+                ->where('recipient_id', auth()->id())
+                ->where('status', 'pending')
+                ->where(function (Builder $query) {
+                    return $query->whereNot('appointment_date', '<', now()->format('Y-m-d'));
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            if ($appointments->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data Janji temu tidak ditemukan'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Janji temu',
+                'data' => [
+                    'appointments' => $appointments,
+                    'appointmentSum' => $appointments->count()
+                ]
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
