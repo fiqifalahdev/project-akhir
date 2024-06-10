@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileApiController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,10 +32,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']); // nanti bikin api nya
 
     // ================== Profile ===================
-    Route::get('/profiles', [ProfileController::class, 'index']);
-    Route::get('/profiles/{profile}', [ProfileController::class, 'show']);
-    Route::put('/profiles', [ProfileController::class, 'update']);
-    Route::delete('/profiles', [ProfileController::class, 'destroy']);
+    Route::get('/profiles', [ProfileApiController::class, 'index']);
+    Route::get('/profiles/{profile}', [ProfileApiController::class, 'show']);
+    Route::put('/profiles', [ProfileApiController::class, 'update']);
+    Route::delete('/profiles', [ProfileApiController::class, 'destroy']);
 
 
     // ================== Location ==================
