@@ -7,6 +7,7 @@ use App\Http\Utility\User\Services\UserService;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Traits\UploadFile;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class ProfileController extends Controller
@@ -31,6 +32,22 @@ class ProfileController extends Controller
 
             $base_info = $this->user_service->getBaseInfo(auth()->user());
 
+            // Retrieve appointment times
+            $checkDate = $base_info->appointmentAcceptance()
+                ->with('requester')
+                ->where('status', 'accepted')
+                ->whereNot('appointment_date', '<=', now())
+                ->orderBy('appointment_time', 'asc')
+                ->first()
+                ->toArray();
+
+            if ($base_info instanceof \Exception) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $base_info->getMessage(),
+                ], Response::HTTP_NOT_FOUND);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'User base info : ' . $base_info->name,
@@ -38,8 +55,8 @@ class ProfileController extends Controller
                     'detail' => $base_info,
                     'location' => $base_info->location()->get(),
                     'feeds' => $base_info->feeds()->get(),
-                    'appointmentSum' => $base_info->appointmentAcceptance()->where('status', 'pending')->count(),
-                    'latestAppointment' => $base_info->appointmentAcceptance()->with('requester')->where('status', 'accepted')->whereNot('appointment_date', '<', now())->get(),
+                    'appointmentSum' => $base_info->appointmentAcceptance()->where('recipient_id', $base_info->id)->where('status', 'pending')->whereNot('appointment_date', '<', now()->format('Y-m-d'))->count(),
+                    'latestAppointment' => $checkDate,
                 ],
             ], Response::HTTP_OK);
         } catch (\Exception $e) {

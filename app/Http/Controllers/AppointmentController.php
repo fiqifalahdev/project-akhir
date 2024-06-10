@@ -24,6 +24,8 @@ class AppointmentController extends Controller
         try {
             $appointments = Appointment::with('recipient')
                 ->where('requester_id', auth()->id())
+                ->whereNot('appointment_date', '<', now()->format('Y-m-d'))
+                ->orderBy('appointment_time', 'asc')
                 ->get();
 
             if ($appointments->isEmpty()) {
