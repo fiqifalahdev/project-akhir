@@ -25,17 +25,18 @@ Route::get('/', function () {
     ]);
 });
 
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth:admin', 'verified'])->name('dashboard');
+})->middleware('auth:admin', 'verified')->name('dashboard');
 
-Route::get('/dashboard-custom', function () {
-    return Inertia::render('DashboardCustom', [
-        'data' => ['foo' => 'bar'],
-    ]);
-})->middleware(['auth:admin', 'verified'])->name('dashboard-custom');
+Route::get('/user', function () {
+    return Inertia::render('Users');
+})->middleware('auth:admin', 'verified')->name('user');
+
 
 Route::middleware('auth:admin')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
