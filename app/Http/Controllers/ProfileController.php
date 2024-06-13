@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Admin;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,17 +26,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * Update the user's profile information.
+     * Update the admins's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $admins = Auth::guard('admin')->user()->id;
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
+        Admin::findOrFail($admins)->update($request->validated());
 
         return Redirect::route('profile.edit');
     }
@@ -46,12 +43,12 @@ class ProfileController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         $request->validate([
-            'password' => ['required', 'current_password'],
+            'password' => ['required', 'current_password:admin'],
         ]);
 
-        $user = $request->user();
+        $user = Admin::findOrFail(Auth::guard('admin')->user()->id);
 
-        Auth::logout();
+        Auth::guard('admin')->logout();
 
         $user->delete();
 

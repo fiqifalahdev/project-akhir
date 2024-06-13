@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AdminController extends Controller
 {
@@ -12,7 +14,12 @@ class AdminController extends Controller
      */
     public function index()
     {
-        //
+
+        $user = User::orderBy('created_at', 'desc')->paginate(7);
+
+        return Inertia::render('Users', [
+            'users' => $user,
+        ]);
     }
 
     /**

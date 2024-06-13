@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FishMarketController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -23,9 +24,7 @@ Route::middleware('auth.admin')->group(function () {
         return Inertia::render('FishPrice');
     })->name('fish-price');
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Users');
-    })->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
 
     Route::prefix('fish-market')->group(function () {

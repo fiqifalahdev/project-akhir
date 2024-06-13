@@ -44,15 +44,6 @@ export default function Sidebar() {
                                 routeName="fish-price"
                             />
                         </div>
-                        <ul className="mt-6">
-                            <li className="relative px-6 py-3">
-                                <form onSubmit={submit}>
-                                    <button className="bg-indigo-600 w-full text-white h-[50px] rounded-lg font-semibold text-sm transition-colors duration-150 hover:bg-indigo-700">
-                                        Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </aside>
