@@ -1,13 +1,13 @@
-import Authenticated from "@/Layouts/AuthenticatedLayout";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Users({ auth }) {
+export default function FishPrice({ auth }) {
     return (
-        <Authenticated user={auth.user}>
-            <Head title="Informasi Pengguna Aplikasi" />
+        <AuthenticatedLayout user={auth.user}>
+            <Head title="Daftar Harga Ikan" />
 
-            <h2 className="my-6 text-2xl font-semibold text-gray-800 dark:text-gray-200">
-                Informasi Pengguna Aplikasi
+            <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                Table Daftar Harga Ikan
             </h2>
 
             <div className="w-full overflow-hidden rounded-lg shadow-xs mb-5">
@@ -413,6 +413,6 @@ export default function Users({ auth }) {
                     </span>
                 </div>
             </div>
-        </Authenticated>
+        </AuthenticatedLayout>
     );
 }

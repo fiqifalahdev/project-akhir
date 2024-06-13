@@ -15,17 +15,18 @@ function SelectedMenu({ route }) {
     ) : null;
 }
 
-export default function SidebarMenu({ name, icon, route }) {
+export default function SidebarMenu({ name, icon, routeName }) {
     return (
         <>
             <ul className="mt-6">
                 <li className="relative px-6 py-3">
                     {/* Use this for given route */}
-                    <SelectedMenu route={route} />
+                    <SelectedMenu route={routeName} />
                     <Link
                         className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100"
                         // href="#" // Ganti sesuai route
-                        href={route} // Ganti sesuai route
+                        href={route(routeName)} // Ganti sesuai route
+                        // preserveState
                     >
                         <box-icon name={icon} color="white"></box-icon>
 

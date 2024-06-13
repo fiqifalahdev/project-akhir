@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FishMarketController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -16,26 +17,25 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::middleware('auth.admin')->group(function () {
+
+    Route::get('/fish-price', function () {
+        return Inertia::render('FishPrice');
+    })->name('fish-price');
+
+    Route::get('/dashboard', function () {
+        return Inertia::render('Users');
+    })->name('dashboard');
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware('auth:admin', 'verified')->name('dashboard');
-
-Route::get('/user', function () {
-    return Inertia::render('Users');
-})->middleware('auth:admin', 'verified')->name('user');
-
-
-Route::middleware('auth:admin')->group(function () {
+    Route::prefix('fish-market')->group(function () {
+        Route::get('/', [FishMarketController::class, 'index'])->name('fish-market');
+        Route::get('/create', [FishMarketController::class, 'create'])->name('add-fish-market');
+        Route::post('/store', [FishMarketController::class, 'store'])->name('store-fish-market');
+        Route::get('/edit/{id}', [FishMarketController::class, 'edit'])->name('edit-fish-market');
+        Route::patch('/update/{id}', [FishMarketController::class, 'update'])->name('update-fish-market');
+        Route::delete('/delete/{id}', [FishMarketController::class, 'destroy'])->name('delete-fish-market');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

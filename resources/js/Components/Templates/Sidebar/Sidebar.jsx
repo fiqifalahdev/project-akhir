@@ -1,7 +1,15 @@
 import { useState } from "react";
 import SidebarMenu from "./SidebarMenu";
+import { router } from "@inertiajs/react";
 
 export default function Sidebar() {
+    const submit = (e) => {
+        e.preventDefault();
+
+        // post(route("logout"));
+        router.post(route("logout"));
+    };
+
     return (
         <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
             <aside className="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
@@ -12,14 +20,40 @@ export default function Sidebar() {
                     >
                         TambakkuAdmin
                     </a>
-                    {/* Menampilkan Grafik Harga Ikan */}
-                    <SidebarMenu
-                        name="Harga Ikan"
-                        icon="dollar-circle"
-                        route="dashboard"
-                    />
-                    {/* Menampilkan Pengguna yang sudah terdaftar */}
-                    <SidebarMenu name="Pengguna" icon="user" route="user" />
+
+                    <div className="flex flex-col justify-between  h-[90vh]">
+                        <div className="menu mt-6">
+                            {/* Menampilkan Pengguna yang sudah terdaftar */}
+                            <SidebarMenu
+                                name="Pengguna"
+                                icon="user"
+                                routeName="dashboard"
+                            />
+
+                            {/* Menampilkan Pengelolaan Pasar Ikan */}
+                            <SidebarMenu
+                                name="Pasar Ikan"
+                                icon="store-alt"
+                                routeName="fish-market"
+                            />
+
+                            {/* Menampilkan Grafik Harga Ikan */}
+                            <SidebarMenu
+                                name="Harga Ikan"
+                                icon="dollar-circle"
+                                routeName="fish-price"
+                            />
+                        </div>
+                        <ul className="mt-6">
+                            <li className="relative px-6 py-3">
+                                <form onSubmit={submit}>
+                                    <button className="bg-indigo-600 w-full text-white h-[50px] rounded-lg font-semibold text-sm transition-colors duration-150 hover:bg-indigo-700">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </aside>
         </div>
