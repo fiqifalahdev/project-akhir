@@ -37,9 +37,8 @@ class ProfileApiController extends Controller
                 ->with('requester')
                 ->where('status', 'accepted')
                 ->whereNot('appointment_date', '<=', now())
-                ->orderBy('appointment_time', 'asc')
-                ->first()
-                ->toArray();
+                ->orderBy('appointment_date', 'asc')
+                ->first();
 
             if ($base_info instanceof \Exception) {
                 return response()->json([
@@ -56,7 +55,7 @@ class ProfileApiController extends Controller
                     'location' => $base_info->location()->get(),
                     'feeds' => $base_info->feeds()->get(),
                     'appointmentSum' => $base_info->appointmentAcceptance()->where('recipient_id', $base_info->id)->where('status', 'pending')->whereNot('appointment_date', '<', now()->format('Y-m-d'))->count(),
-                    'latestAppointment' => $checkDate,
+                    'latestAppointment' => $checkDate == null ? null : $checkDate->toArray(),
                 ],
             ], Response::HTTP_OK);
         } catch (\Exception $e) {

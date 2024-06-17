@@ -26,23 +26,30 @@ class NotificationController extends Controller
      * 
      * @return JsonResponse
      */
-    public function storeToken(Request $request): JsonResponse
+    public static function storeToken(Request $request): JsonResponse
     {
         try {
+            // Check if user device token already exist
             $userToken = DB::table('user_device_token_tables')
                 ->where('user_id', auth()->id())
+                ->where('device_token', $request->device_token)
                 ->get();
 
             if ($userToken->isEmpty()) {
-                DB::table('user_device_token_tables', [
+                DB::table('user_device_token_tables')->insert([
                     'user_id' => auth()->id(),
                     'device_token' => $request->device_token
                 ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Device token berhasil disimpan'
+                ], Response::HTTP_CREATED);
             }
 
             return response()->json([
-                'success' => true,
-                'message' => 'Device token berhasil disimpan'
+                'success' => false,
+                'message' => 'Device token sudah ada'
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
