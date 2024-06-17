@@ -122,6 +122,35 @@ class LocationController extends Controller
         }
     }
 
+    public function getTargetLocation(Request $request)
+    {
+        try {
+            $location = Location::where('user_id', $request->user_id)->first();
+
+            if ($location == null) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User location not found'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User location found',
+                'data' => [
+                    'latitude' => $location->latitude,
+                    'longitude' => $location->longitude,
+                    'address' => $location->address
+                ]
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to get target location : ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     protected function haversineCalc(array $longlat1, array $longlat2) // ini nanti harus dimasukkan ke buku PA
     {
 

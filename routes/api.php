@@ -41,6 +41,7 @@ Route::middleware('auth:api')->group(function () {
     // ================== Location ==================
     Route::post('/store/location', [LocationController::class, 'storeLocation']);
     Route::get('/locations', [LocationController::class, 'getUserLocation']);
+    Route::post('/locations/target', [LocationController::class, 'getTargetLocation']);
 
     // ==================== Feed ====================
     Route::post('/store/feeds', [FeedController::class, 'store']);
