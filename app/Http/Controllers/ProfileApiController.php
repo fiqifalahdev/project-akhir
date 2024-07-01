@@ -20,6 +20,41 @@ class ProfileApiController extends Controller
     }
 
     /**
+     * Show All users that registered on apps
+     * 
+     * 
+     */
+    public function getAllUsers()
+    {
+        try {
+            $users = User::with('location')->get();
+
+            foreach ($users as $user) {
+                $data[] = [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'gender' => $user->gender,
+                    'birthdate' => $user->birthdate,
+                    'profile_image' => $user->profile_image,
+                    'location' => $user->location,
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All users',
+                'data' => $data,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      * or in other word this function is for showing a base_info from user
      *    - add the catalog image on the detail profile

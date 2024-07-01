@@ -42,6 +42,8 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'gender' => $request->gender,
                 'role' => $request->role,
+                'about' => $request->about,
+                'address' => $request->address,
                 'birthdate' =>  date('Y-m-d', strtotime($request->birthdate)),
                 'password' => bcrypt($request->password)
             ]);
@@ -51,7 +53,7 @@ class AuthController extends Controller
             // generate a token for the user
             $token = JWTAuth::fromUser($user);
 
-            return $this->auth_response(Response::HTTP_CREATED, $user->only(['name', 'email', 'phone', 'gender', 'birthdate', 'role']), $token, 'User berhasil terdaftar!');
+            return $this->auth_response(Response::HTTP_CREATED, $user->only(['name', 'email', 'phone', 'gender', 'birthdate', 'role', 'about', 'address']), $token, 'User berhasil terdaftar!');
         } catch (\Exception $e) {
             return $this->auth_response(Response::HTTP_INTERNAL_SERVER_ERROR, ['error' => $e->getMessage()]);
         }
@@ -143,6 +145,8 @@ class AuthController extends Controller
                     'gender' => Auth::user()->gender,
                     'birthdate' => Auth::user()->birthdate,
                     'role' => Auth::user()->role,
+                    'about' => Auth::user()->about,
+                    'address' => Auth::user()->address,
                 ],
                 'device_token' => $deviceToken == null ? [] : $deviceToken
             ];
