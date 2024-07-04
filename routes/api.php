@@ -41,6 +41,7 @@ Route::middleware('auth:api')->group(function () {
 
     // ================== Location ==================
     Route::post('/store/location', [LocationController::class, 'storeLocation']);
+    Route::get('/get/current-location', [LocationController::class, 'getCurrentLocation']);
     Route::get('/locations', [LocationController::class, 'getUserLocation']);
     Route::post('/locations/target', [LocationController::class, 'getTargetLocation']);
 
