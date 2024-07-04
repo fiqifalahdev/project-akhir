@@ -20,6 +20,43 @@ class ProfileApiController extends Controller
     }
 
     /**
+     * Show All users that registered on apps
+     * 
+     * 
+     */
+    public function getAllUsers()
+    {
+        try {
+            $users = User::with('location')->where('id', '!=', auth()->user()->id)->get();
+
+            foreach ($users as $user) {
+                $data[] = [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'gender' => $user->gender,
+                    'birthdate' => $user->birthdate,
+                    'role' => $user->role,
+                    'profile_image' => $user->profile_image,
+                    'location' => $user->location,
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'All users',
+                'data' => $data,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      * or in other word this function is for showing a base_info from user
      *    - add the catalog image on the detail profile
@@ -47,6 +84,25 @@ class ProfileApiController extends Controller
                 ], Response::HTTP_NOT_FOUND);
             }
 
+            $users = User::with('location')->where('id', '!=', auth()->user()->id)
+                ->where('created_at', '>=', Carbon::now()->subDays(7))
+                ->limit(2)
+                ->get();
+
+            foreach ($users as $user) {
+                $userData[] = [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'gender' => $user->gender,
+                    'birthdate' => $user->birthdate,
+                    'role' => $user->role,
+                    'profile_image' => $user->profile_image,
+                    'location' => $user->location,
+                ];
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'User base info : ' . $base_info->name,
@@ -56,6 +112,7 @@ class ProfileApiController extends Controller
                     'feeds' => $base_info->feeds()->get(),
                     'appointmentSum' => $base_info->appointmentAcceptance()->where('recipient_id', $base_info->id)->where('status', 'pending')->whereNot('appointment_date', '<', now()->format('Y-m-d'))->count(),
                     'latestAppointment' => $checkDate == null ? null : $checkDate->toArray(),
+                    'users' => $userData,
                 ],
             ], Response::HTTP_OK);
         } catch (\Exception $e) {

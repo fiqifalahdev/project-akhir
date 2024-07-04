@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FeedRequest;
 use App\Http\Traits\UploadFile;
 use App\Models\Feed;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -44,6 +46,36 @@ class FeedController extends Controller
                 'success' => true,
                 'message' => 'Feed created successfully',
             ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get Feed image post based on its id
+     * 
+     * @param Feed $feed
+     * 
+     * @return JsonResponse
+     * 
+     */
+    public function show(Feed $feed): JsonResponse
+    {
+        try {
+            $feeds = [
+                'image' => $feed->image,
+                'caption' => $feed->caption,
+                'created_at' => Carbon::parse($feed->created_at, 'ID')->format('d M Y H:i'),
+                'user' => $feed->user()->first(['id', 'name', 'email', 'profile_image']),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $feeds,
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

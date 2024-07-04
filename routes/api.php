@@ -6,7 +6,6 @@ use App\Http\Controllers\FeedController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileApiController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,19 +30,23 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']); // nanti bikin api nya
 
+    // ================== User ===================
+    Route::get('/get/all-users', [ProfileApiController::class, 'getAllUsers']);
+
     // ================== Profile ===================
     Route::get('/profiles', [ProfileApiController::class, 'index']);
     Route::get('/profiles/{profile}', [ProfileApiController::class, 'show']);
     Route::put('/profiles', [ProfileApiController::class, 'update']);
     Route::delete('/profiles', [ProfileApiController::class, 'destroy']);
 
-
     // ================== Location ==================
     Route::post('/store/location', [LocationController::class, 'storeLocation']);
+    Route::get('/get/current-location', [LocationController::class, 'getCurrentLocation']);
     Route::get('/locations', [LocationController::class, 'getUserLocation']);
     Route::post('/locations/target', [LocationController::class, 'getTargetLocation']);
 
     // ==================== Feed ====================
+    Route::get('/get/feeds/{feed}', [FeedController::class, 'show']);
     Route::post('/store/feeds', [FeedController::class, 'store']);
     Route::put('/update/feeds/{feed}', [FeedController::class, 'update']);
 

@@ -32,9 +32,11 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:55',
             'email' => 'email|required|unique:users',
             'phone' => 'required|max:12',
-            'gender' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+            'gender' => ['required', Rule::in(['Laki-Laki', 'Perempuan'])],
             'role' => ['required', Rule::enum(Role::class)],
             'birthdate' => 'required',
+            'address' => 'required',
+            'about' => 'required',
             'password' => 'required|confirmed',
             'password_confirmation' => 'required'
         ];
@@ -60,6 +62,8 @@ class RegisterRequest extends FormRequest
             'password.required' => 'Kata Sandi harus diisi!',
             'password.confirmed' => 'Konfirmasi Kata Sandi tidak sesuai!',
             'password_confirmation.required' => 'Konfirmasi Kata Sandi harus diisi!',
+            'address.required' => 'Alamat harus diisi!',
+            'about.required' => 'Deskripsi Bisnis harus diisi!'
         ];
     }
 }
