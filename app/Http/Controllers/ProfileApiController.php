@@ -112,7 +112,7 @@ class ProfileApiController extends Controller
                     'feeds' => $base_info->feeds()->get(),
                     'appointmentSum' => $base_info->appointmentAcceptance()->where('recipient_id', $base_info->id)->where('status', 'pending')->whereNot('appointment_date', '<', now()->format('Y-m-d'))->count(),
                     'latestAppointment' => $checkDate == null ? null : $checkDate->toArray(),
-                    'users' => $userData,
+                    'users' => $userData ?? [],
                 ],
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
